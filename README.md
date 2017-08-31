@@ -9,7 +9,7 @@ git-relate <commit> [<commit>]
 
 ```
 # Relate the current HEAD to master
-$ g relate master
+$ git relate master
 master (0be5ac6) -> 6 commits -> HEAD (65c19ec)
 
 # Relate two commits by hash
@@ -17,7 +17,7 @@ $ git relate 1acd66a34 7b69d8a5a
 The common ancestor is miles/keep-paper-key~2 (d17bd9b)
 
 # Relate two branches
-$ g relate miles/proxy miles/tiny
+$ git relate miles/proxy miles/tiny
 The common ancestor is tags/v1.0.27~576 (5848b25)
 ```
 
@@ -25,13 +25,12 @@ The common ancestor is tags/v1.0.27~576 (5848b25)
 Add the script to your path
 ```
 git clone git@github.com:mlsteele/git-relate.git
-cd git-relate
-cp git-relate ~/bin/git-relate
+cp git-relate/git-relate ~/bin/git-relate
 # OR
 ln -s ~/code/git-relate ~/bin/git-relate
 ```
 
-Add the git alias to `~/.gitconfig`
+AND/OR add the git alias to `~/.gitconfig`
 ```
 ...
 [alias]
