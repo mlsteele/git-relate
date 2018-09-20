@@ -30,11 +30,11 @@ def rev_parse(commit):
 A, B = rev_parse(a), rev_parse(b)
 
 if A == B:
-  print "Those are the same commit."
+  print("Those are the same commit.")
   sys.exit(0)
 
-# print "Comparing {} ({}) and {} ({})".format(
-#   a, A[:7], b, B[:7])
+# print("Comparing {} ({}) and {} ({})".format(
+#   a, A[:7], b, B[:7]))
 
 def is_ancestor(c1, c2):
   """Is c1 an ancestor of c2?"""
@@ -60,16 +60,16 @@ a_ancestor_b = is_ancestor(A, B)
 b_ancestor_a = is_ancestor(B, A)
 
 if a_ancestor_b and b_ancestor_a:
-  print "They are ancestors of each other. (huh?)"
+  print("They are ancestors of each other. (huh?)")
 elif a_ancestor_b:
   n = commits_between(B, A)
-  # print "{} ({}) is an ancestor of {} ({}) by {} commits".format(a, A[:7], b, B[:7], n)
-  print "{} -> {} commits -> {}".format(present(a, A), n, present(b, B))
+  # print("{} ({}) is an ancestor of {} ({}) by {} commits".format(a, A[:7], b, B[:7], n))
+  print("{} -> {} commits -> {}".format(present(a, A), n, present(b, B)))
 elif b_ancestor_a:
   n = commits_between(A, B)
-  # print "{} ({}) is an ancestor of {} ({}) by {} commits".format(b, B[:7], a, A[:7], n)
-  print "{} -> {} commits -> {}".format(present(b, B), n, present(a, A))
+  # print("{} ({}) is an ancestor of {} ({}) by {} commits".format(b, B[:7], a, A[:7], n))
+  print("{} -> {} commits -> {}".format(present(b, B), n, present(a, A)))
 else:
   C = merge_base(A, B)
   c = friendly_name(C)
-  print "The common ancestor is {} ({})".format(c, C[:7])
+  print("The common ancestor is {} ({})".format(c, C[:7]))
