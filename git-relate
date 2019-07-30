@@ -42,8 +42,12 @@ def is_ancestor(c1, c2):
   return res.exit_code == 0
 
 def merge_base(c1, c2):
-  res = sh.git("merge-base", c1, c2)
-  return str(res).strip()
+  res = sh.git("merge-base", c1, c2, _ok_code=[0, 1])
+  if res.exit_code == 0:
+    return str(res).strip()
+  if res.exit_code == 1:
+    return None
+  raise RuntimeError("merge-base returned unexpected status code")
 
 def friendly_name(c):
   res = sh.git("name-rev", c)
@@ -71,5 +75,8 @@ elif b_ancestor_a:
   print("{} -> {} commits -> {}".format(present(b, B), n, present(a, A)))
 else:
   C = merge_base(A, B)
-  c = friendly_name(C)
-  print("The common ancestor is {} ({})".format(c, C[:7]))
+  if C != None:
+    c = friendly_name(C)
+    print("The common ancestor is {} ({})".format(c, C[:7]))
+  else:
+    print("No common ancestor")
