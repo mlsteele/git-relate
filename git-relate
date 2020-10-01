@@ -30,11 +30,11 @@ def rev_parse(commit):
 A, B = rev_parse(a), rev_parse(b)
 
 if A == B:
-  print("Those are the same commit.")
+  print("{} and {} are the same commit: {}".format(a, b, A[:9]))
   sys.exit(0)
 
 # print("Comparing {} ({}) and {} ({})".format(
-#   a, A[:7], b, B[:7]))
+#   a, A[:9], b, B[:9]))
 
 def is_ancestor(c1, c2):
   """Is c1 an ancestor of c2?"""
@@ -54,11 +54,17 @@ def friendly_name(c):
   return str(res).strip().split(" ")[1]
 
 def commits_between(c1, c2):
-  res = sh.git("rev-list", c1, "^" + c2, "--count")
+  res = sh.git("rev-list", c2, "^" + c1, "--count")
   return int(str(res))
 
+def commits_between_str(c1, c2):
+  n = commits_between(c1, c2)
+  return "{} commits".format(n) if n != 1 else "1 commit"
+
 def present(c, C):
-  return "{} ({})".format(c, C[:7])
+  if c == C[:9]:
+    return c
+  return "{} ({})".format(c, C[:9])
 
 a_ancestor_b = is_ancestor(A, B)
 b_ancestor_a = is_ancestor(B, A)
@@ -66,17 +72,17 @@ b_ancestor_a = is_ancestor(B, A)
 if a_ancestor_b and b_ancestor_a:
   print("They are ancestors of each other. (huh?)")
 elif a_ancestor_b:
-  n = commits_between(B, A)
-  # print("{} ({}) is an ancestor of {} ({}) by {} commits".format(a, A[:7], b, B[:7], n))
-  print("{} -> {} commits -> {}".format(present(a, A), n, present(b, B)))
+  print("{} ── {} ─→ {}".format(present(a, A),
+    commits_between_str(A, B), present(b, B)))
 elif b_ancestor_a:
-  n = commits_between(A, B)
-  # print("{} ({}) is an ancestor of {} ({}) by {} commits".format(b, B[:7], a, A[:7], n))
-  print("{} -> {} commits -> {}".format(present(b, B), n, present(a, A)))
+  print("{} ── {} ─→ {}".format(present(b, B),
+    commits_between_str(B, A), present(a, A)))
 else:
   C = merge_base(A, B)
   if C != None:
     c = friendly_name(C)
-    print("The common ancestor is {} ({})".format(c, C[:7]))
+    print("common ancestor: {}".format(present(c, C)))
+    print("├── {} ─→ {}".format(commits_between_str(C, A), present(a, A)))
+    print("└── {} ─→ {}".format(commits_between_str(C, B), present(b, B)))
   else:
     print("No common ancestor")
