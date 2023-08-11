@@ -38,16 +38,22 @@ if A == B:
 
 def is_ancestor(c1, c2):
   """Is c1 an ancestor of c2?"""
-  res = sh.git("merge-base", "--is-ancestor", c1, c2, _ok_code=[0, 1])
-  return res.exit_code == 0
+  try:
+    res = sh.git("merge-base", "--is-ancestor", c1, c2)
+    return True
+  except sh.ErrorReturnCode_1:
+    return False
+  except sh.ErrorReturnCode:
+    raise RuntimeError("merge-base returned unexpected status code from is_ancestor")
 
 def merge_base(c1, c2):
-  res = sh.git("merge-base", c1, c2, _ok_code=[0, 1])
-  if res.exit_code == 0:
+  try:
+    res = sh.git("merge-base", c1, c2)
     return str(res).strip()
-  if res.exit_code == 1:
+  except sh.ErrorReturnCode_1:
     return None
-  raise RuntimeError("merge-base returned unexpected status code")
+  except sh.ErrorReturnCode:
+    raise RuntimeError("merge-base returned unexpected status code")
 
 def friendly_name(c):
   res = sh.git("name-rev", c)
